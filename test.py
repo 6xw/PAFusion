@@ -18,7 +18,6 @@ def main():
     args = parser.parse_args()
 
     model = Generator_().cuda()
-    model.eval()
 
     # Dataset configuration - path mappings
     dataset_config = {
@@ -57,12 +56,15 @@ def main():
     if args.type not in dataset_config:
         raise ValueError(f"Invalid dataset type: {args.type}")
     
+    print('Dataset type:',args.type)
+    
     config = dataset_config[args.type]
     A_path = config['A_path']
     B_path = config['B_path']
     weight_path = config.get('weight_path', f'./models/{args.type}/DDAN5_G.pth')
 
     model.load_state_dict(torch.load(weight_path))
+    model.eval()
 
     save_path = os.path.join('./results/', args.type)
     os.makedirs(save_path, exist_ok=True)
